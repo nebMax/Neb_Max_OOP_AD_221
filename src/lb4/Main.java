@@ -4,40 +4,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    static class Item{
+    static class Item {
         private String name;
         private double price;
-        private double discount;
 
-        public Item(String name, double price, double discount){
+        public Item(String name, double price) {
             this.name = name;
             this.price = price;
-            this.discount = discount;
         }
 
-        public String getName(){
+        public String getName() {
             return name;
         }
-        public double getPrice(){
+
+        public double getPrice() {
             return price;
-        }
-        public double getDiscount(){
-            return discount;
-        }
-        public double getDiscountedPrice(){
-            return price -(discount * price);
         }
 
         public String toString() {
-            return name + " - $" + getPrice() + " (-$" + (getPrice() * getDiscount()) + ")";
+            return name + " - $" + price;
         }
     }
 
-    public static class Bill{
+    public static class DiscountedItem extends Item {
+        private double discount;
+
+        public DiscountedItem(String name, double price, double discount) {
+            super(name, price);
+            this.discount = discount;
+        }
+
+        public double getDiscount() {
+            return discount;
+        }
+
+        public double getDiscountedPrice() {
+            return getPrice() - (getPrice() * discount);
+        }
+
+        public String toString() {
+            return super.getName() + " - $" + super.getPrice() + " (-$" + (super.getPrice() * discount) + ")";
+        }
+    }
+
+    public static class Bill {
         private List<Item> items;
         private boolean isRegularCustomer;
 
-        public Bill(boolean isRegularCustomer){
+        public Bill(boolean isRegularCustomer) {
             this.isRegularCustomer = isRegularCustomer;
             items = new ArrayList<>();
         }
@@ -46,50 +60,57 @@ public class Main {
             items.add(item);
         }
 
-        public double getTotal(){
+        public double getTotal() {
             double total = 0;
             for (Item item : items) {
-                if (!isRegularCustomer) {
-                    total += item.getPrice(); // Для звичайних клієнтів без знижки
+                if (item instanceof DiscountedItem && isRegularCustomer) {
+                    total += ((DiscountedItem) item).getDiscountedPrice();
                 } else {
-                    total += item.getDiscountedPrice(); // Для постійних клієнтів зі знижкою
+                    total += item.getPrice();
                 }
             }
             return total;
         }
 
+        public double getTotalDiscount() {
+            double totalDiscount = 0;
+            for (Item item : items) {
+                if (item instanceof DiscountedItem && isRegularCustomer) {
+                    totalDiscount += ((DiscountedItem) item).getDiscountedPrice() - item.getPrice(); // Calculate the discount for each discounted item
+                } else {
+                    totalDiscount += 0; // No discount for regular items
+                }
+            }
+            return totalDiscount;
+        }
+
         public void printBill() {
-            System.out.println("Score:\n");
+            System.out.println("Score:");
             for (Item item : items) {
                 System.out.println(item);
             }
             System.out.println("\nTotal: $" + getTotal());
-            if (isRegularCustomer) {
-                double totalDiscount = 0;
-                for (Item item : items) {
-                    totalDiscount += item.getPrice() * item.getDiscount();
-                }
-                System.out.println("Total discount: $" + totalDiscount + "\n");
-            }
+            System.out.println("Total discount: $" + getTotalDiscount()+"\n");
         }
     }
-    public static void main(String[]args){
-        Item item1 = new Item("Super potato", 4.9, 0.3);
-        Item item2 = new Item("MEGA SUPER CUCUMBER", 3.3, 0.5);
-        Item item3 = new Item("Mini apple", 2.0, 0.05);
 
-        Bill regularCustomerBill = new Bill(true);
-        Bill normalCustomerBill = new Bill(false);
+    public static void main(String[] args) {
+        DiscountedItem item1 = new DiscountedItem("Super potato", 4.9, 0.3);
+        DiscountedItem item2 = new DiscountedItem("MEGA SUPER CUCUMBER", 3.3, 0.5);
+        Item item3 = new Item("Mini apple", 2.0);
+
+        Bill regularCustomerBill = new Bill(true); // Постійний клієнт
+        Bill normalCustomerBill = new Bill(false); // Звичайний клієнт
 
         regularCustomerBill.addItem(item1);
         regularCustomerBill.addItem(item2);
-        regularCustomerBill.addItem(item3);
 
         normalCustomerBill.addItem(item1);
         normalCustomerBill.addItem(item2);
-        normalCustomerBill.addItem(item3);
+        normalCustomerBill.addItem(item3); // Додати товар item3 до звичайного клієнта
 
         regularCustomerBill.printBill();
         normalCustomerBill.printBill();
     }
 }
+
