@@ -93,5 +93,3 @@ public class Main {
         normalCustomerBill.printBill();
     }
 }
-
-
