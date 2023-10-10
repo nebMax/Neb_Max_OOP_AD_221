@@ -97,13 +97,14 @@ public class Main {
     public static void main(String[] args) {
         DiscountedItem item1 = new DiscountedItem("Super potato", 4.9, 0.3);
         DiscountedItem item2 = new DiscountedItem("MEGA SUPER CUCUMBER", 3.3, 0.5);
-        Item item3 = new Item("Mini apple", 2.0);
+        DiscountedItem item3 = new DiscountedItem("Mini apple", 2.0, 0.05);
 
         Bill regularCustomerBill = new Bill(true); // Постійний клієнт
         Bill normalCustomerBill = new Bill(false); // Звичайний клієнт
 
         regularCustomerBill.addItem(item1);
         regularCustomerBill.addItem(item2);
+        regularCustomerBill.addItem(item3);
 
         normalCustomerBill.addItem(item1);
         normalCustomerBill.addItem(item2);
