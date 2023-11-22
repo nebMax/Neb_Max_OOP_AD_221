@@ -1,6 +1,7 @@
 package lb7;
 
 public class Task_2 {
+
     static abstract class Pizza {
         void prepare() {
             System.out.println("Preparing pizza");
@@ -120,11 +121,5 @@ public class Task_2 {
         }
     }
 
-    public static void main(String[] args) {
-        PizzaStore italianPizzaStore = new ItalianPizzaStore();
-        italianPizzaStore.orderPizza("carbonara");
 
-        PizzaStore mexicanoCheesePizza = new MexicanoPizzaStore();
-        mexicanoCheesePizza.orderPizza("SuperVau");
-    }
 }
